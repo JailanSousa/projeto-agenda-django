@@ -1,37 +1,47 @@
-from typing import Any, Mapping
+from typing import Any
 from django import forms
 from django.core.exceptions import ValidationError
-from django.core.files.base import File
-from django.db.models.base import Model
-from django.forms.utils import ErrorList
+
+from django.contrib.auth.forms import UserCreationForm
+
 
 from . import models
 
 class ContactForm(forms.ModelForm):
 
-    first_name = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                'class':'classe-a classe-b',
-                'placeholder':'Escreva aqui'
-            }
-        ),
-        label='Primeiro nome',
-        help_text='Texto de ajuda'
-    )
+    # first_name = forms.CharField(
+    #     widget=forms.TextInput(
+    #         attrs={
+    #             'class':'classe-a classe-b',
+    #             'placeholder':'Escreva aqui'
+    #         }
+    #     ),
+    #     label='Primeiro nome',
+    #     help_text='Texto de ajuda'
+    # )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
 
         # self.fields['first_name'].widget.attrs.update({
         #     'class':'classe-a classe-b',
         #     'placeholder':'Escreva aqui'
         # })
+    
+    picture = forms.ImageField(
+        widget=forms.FileInput(
+            attrs={
+                'accept': 'image/*',
+            }
+        )
+    )
 
     class Meta:
         model = models.Contact
         fields = (
             'first_name', 'last_name', 'phone',
+            'email', 'description', 'category',
+            'picture',
         )
         # widgets = {
         #     'first_name': forms.TextInput(
@@ -65,10 +75,13 @@ class ContactForm(forms.ModelForm):
             self.add_error(
                 'first_name',
                 ValidationError(
-                    'Veio do add_error',
+                    'Nome invalido',
                     code='invalid'
                 )
 
             )
 
         return first_name
+
+class RegisterForm(UserCreationForm):
+    ...
